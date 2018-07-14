@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+files=(uart uartInterpreter interrupts GPIO timers stepper)
+
+
+if [ ! -d build ]; then
+	echo "Creating build/ dir..."
+	mkdir build
+fi
+
+if [ -d build ]; then
+	echo 'Cleaning previous build files...'
+	rm -rf build/*
+fi
+
+avr-gcc -std=c11 -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o ./build/main.o main.c
+echo 'Compiled main.c'
+
+
+for filename in $files; do
+	avr-gcc -std=c11 -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o ./build/"$filename".o ./lib/"$filename".c
+	echo Compiled .lib/AVRDuino/"$filename".c
+done
+
+
+avr-gcc -std=c11 -mmcu=atmega328p ./build/*.o -o ./build/main
+echo 'linked .o files'
+avr-objcopy -O ihex -R .eeprom ./build/main ./build/main.hex
+echo 'converted linked output to .hex'
+avrdude -F -V -c arduino -p ATMEGA328P -P /dev/ttyACM0 -b 115200 -U flash:w:./build/main.hex
