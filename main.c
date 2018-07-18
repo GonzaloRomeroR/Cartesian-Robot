@@ -1,6 +1,5 @@
 #define brate0 57600
 
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
@@ -12,12 +11,13 @@
 #include "lib/interrupts.h"
 #include "lib/timers.h"
 #include "lib/stepper.h"
+#include "lib/i2c_interpreter.h"
+#include "lib/i2c.h"
 
 
 FILE uart_io = FDEV_SETUP_STREAM(echoChar, getChar, _FDEV_SETUP_RW);
 enum State {INI, ACT, HOME, POS};
 enum State state;
-
 
 void configureGPIO(){
   setPin('B', 5, 1);
@@ -32,7 +32,6 @@ void configureGPIO(){
   setPin('D', 3, 1);
 }
 
-
 void INTOHandler(){
   _delay_ms(20);
   if (readPin('D', 2)){
@@ -40,11 +39,9 @@ void INTOHandler(){
   }
   else {
     //disableTimerInterrupts();
-    state = HOME;
+    //state = INI;
   }
 }
-
-
 
 int main(){
   state = INI;
@@ -57,11 +54,11 @@ int main(){
   //SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 10);
   //SteppersArray[2] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 10);
   float baseTime = 1.0;
-
   //timer1FastPWM(500, 450, 10);
-
-  setPCINT(1, PCINT2Handler);
-  setPCINT(2, PCINT2Handler);
+  setPCINT(8, PCINT2Handler);
+  setPCINT(9, PCINT2Handler);
+  // setPCINT(10, PCINT2Handler);
+  // setPCINT(11, PCINT2Handler);
   sei();
 
   printf("INI\n");
@@ -71,7 +68,6 @@ int main(){
       case INI:
         pinOn('B', 5);
         pinOff('B', 4);
-
         break;
       case ACT:
         printf("ACT\n");
@@ -80,14 +76,22 @@ int main(){
         state = HOME;
         break;
       case HOME:
-        setBaseTime(baseTime);
-        //enableMotors(SteppersArray, NUMBER_STEPPERS);
-        timer1CTC(baseTime, timer1Handler);
         printf("HOME\n");
-        state = POS;
+        setBaseTime(baseTime);
+        enableMotors(SteppersArray, NUMBER_STEPPERS);
+        timer1CTC(baseTime, timer1Handler);
+        homing(SteppersArray, NUMBER_STEPPERS);
+
+        while (1){
+          if (checkHoming(SteppersArray, NUMBER_STEPPERS)){
+            state = POS;
+            printf("POS\n");
+            break;
+          }
+        }
+
         break;
       case POS:
-        //printf("POS\n");
         _delay_ms(10000);
         break;
       default:

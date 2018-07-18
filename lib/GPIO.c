@@ -25,6 +25,11 @@ int DDpinB[] = {
   DDB3, DDB4, DDB5
 };
 
+int DDpinC[] = {
+  DDC0, DDC1, DDC2,
+  DDC3, DDC4, DDC5
+};
+
 void setPin(char PORT, int number, int state){
   if (state){
     if (PORT == 'D'){
@@ -33,6 +38,10 @@ void setPin(char PORT, int number, int state){
     if (PORT == 'B'){
       DDRB |= (1 << DDpinB[number]);
     }
+    if (PORT == 'C'){
+      DDRC |= (1 << DDpinC[number]);
+    }
+
   }
   else{
     if (PORT == 'D'){
@@ -40,6 +49,9 @@ void setPin(char PORT, int number, int state){
     }
     if (PORT == 'B'){
       DDRB &=~ (1 << DDpinB[number]);
+    }
+    if (PORT == 'C'){
+      DDRC &=~ (1 << DDpinC[number]);
     }
   }
 }
@@ -51,6 +63,9 @@ void pinOn(char PORT, int number){
   if (PORT == 'B'){
     PORTB |= (1 << pinB[number]);
   }
+  if (PORT == 'C'){
+    PORTC |= (1 << pinC[number]);
+  }
 }
 
 void pinOff(char PORT, int number){
@@ -59,6 +74,9 @@ void pinOff(char PORT, int number){
   }
   if (PORT == 'B'){
     PORTB &=~ (1 << pinB[number]);
+  }
+  if (PORT == 'C'){
+    PORTC &=~ (1 << pinC[number]);
   }
 }
 
@@ -69,6 +87,9 @@ void pinToggle(char PORT, int number){
   if (PORT == 'B'){
     PORTB ^= (1 << pinB[number]);
   }
+  if (PORT == 'C'){
+    PORTC ^= (1 << pinC[number]);
+  }
 }
 
 int readPin(char PORT, int number){
@@ -77,5 +98,8 @@ int readPin(char PORT, int number){
   }
   if (PORT == 'B'){
     return (PINB & (1 << pinB[number]));
+  }
+  if (PORT == 'C'){
+    return (PINC & (1 << pinC[number]));
   }
 }

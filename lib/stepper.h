@@ -7,7 +7,7 @@
 #define BACKWARD 0
 #define START 1
 #define END 0
-#define NUMBER_STEPPERS 1
+#define NUMBER_STEPPERS 2
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -15,7 +15,17 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <util/delay.h>
+#include <avr/wdt.h>
 #include "GPIO.h"
+
+
+#define reset()             \
+do{                         \
+    wdt_enable(WDTO_15MS);  \
+    for(;;){                \
+    }                       \
+} while(0)
+
 
 float baseTime;
 int counter[NUMBER_STEPPERS];
@@ -40,6 +50,7 @@ typedef struct {
 } Stepper;
 
 Stepper SteppersArray[NUMBER_STEPPERS];
+// int NUMBER_STEPPERS;
 
 Stepper createStepper(char enPort, int enPin, char dPort,
    int dPin, char stPort, int stPin, float degreesPerStep, int rpm);
@@ -56,5 +67,8 @@ void raceEnd(int motorNumber, int class);
 void absolutePosition(Stepper *PaP, int position);
 void relativePosition(Stepper *PaP, int position);
 int getRelative(Stepper *PaP);
+int checkHoming(Stepper PaPArray[], int number_steppers);
+//void reset();
+// void setNumberSteppers(int number_steppers);
 
 #endif

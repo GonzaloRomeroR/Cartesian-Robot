@@ -102,6 +102,7 @@ void commandInterpreter(char command[], int size){
     break;
     case 'r':
     printf("Reseting\n");
+    reset();
     break;
     case 'h':
     help();

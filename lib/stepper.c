@@ -20,6 +20,17 @@ void disableMotors(Stepper PaPArray[], int number_steppers){
 }
 
 
+// void reset(void)
+// {
+//     WDTCR=0x18;
+//     WDTCR=0x08;
+//     #asm("wdr")
+//     while(1);
+// }
+// void setNumberSteppers(int number_steppers){
+//   NUMBER_STEPPERS = number_steppers;
+// }
+
 void stopMotors(Stepper PaPArray[], int number_steppers){
   for (int i = 0; i < number_steppers; i++){
     PaPArray[i].steps = 0;
@@ -61,6 +72,16 @@ void homing(Stepper PaPArray[], int number_steppers){
       int maxInt = INT_MAX;
       rotateSteps(&PaPArray[i], INT_MAX, FORWARD);
     }
+}
+
+int checkHoming(Stepper PaPArray[], int number_steppers){
+  int success = 1;
+  for (int i = 0; i < number_steppers; i++){
+    if (PaPArray[i].homeRoutine == 1){
+      success = 0;
+    }
+  }
+  return success;
 }
 
 void absolutePosition(Stepper *PaP, int position){
@@ -110,8 +131,6 @@ void raceEnd(int motorNumber, int class){
       SteppersArray[motorNumber].dir = BACKWARD;
       rotateSteps(&SteppersArray[motorNumber],
         maxInt, SteppersArray[motorNumber].dir);
-      printf("START interrupt\n");
-
     }
     if (class == END){
       int maxInt = INT_MAX;
@@ -119,17 +138,18 @@ void raceEnd(int motorNumber, int class){
       SteppersArray[motorNumber].position = 0;
       SteppersArray[motorNumber].steps = 0;
       SteppersArray[motorNumber].homeRoutine = 0;
-      printf("END interrupt. Max Steps = %d\n", SteppersArray[motorNumber].maxSteps);
+      printf("END interrupt motor %d. Max Steps = %d\n", motorNumber,
+        SteppersArray[motorNumber].maxSteps);
     }
   }
 }
 
 void PCINT2Handler(){
   _delay_ms(20);
-  if (readPin('B', 1)){
+  if (readPin('C', 0)){
     raceEnd(0, START);
   }
-  if (readPin('B', 2)){
+  if (readPin('C', 1)){
     raceEnd(0, END);
   }
 }
