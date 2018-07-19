@@ -1,7 +1,6 @@
 #include "i2c_interpreter.h"
 
-int newCoordinateX = 0;
-int newCoordinateY = 0;
+int newCoordinate[] = {0, 0, 0};
 int Diameter = 0;
 int category = 0;
 
@@ -11,24 +10,46 @@ char command[10];
 char buffer[10];
 
 
-void positionX(){
+void position(char selector){
+
+	int motor;
+
+	if (selector == 'X'){
+		motor = 0;
+	}
+	if (selector == 'Y'){
+		motor = 1;
+	}
+	if (selector == 'Z'){
+		motor = 2;
+	}
+
 	int size;
-	if (newCoordinateX < 10){
+	if (newCoordinate[motor] < 10){
 		size = 1;
 	}
-	if (newCoordinateX > 10){
+	if (newCoordinate[motor] >= 10){
 		size = 2;
 	}
-	if (newCoordinateX == 100){
+	if (newCoordinate[motor] == 100){
 		size = 3;
 	}
 	char str[size];
-	sprintf(str, "%d", newCoordinateX);
-	//:Rn:
+	sprintf(str, "%d", newCoordinate[motor]);
+
 	char command[4 + size];
 	command[0] = ':';
 	command[1] = 'R';
-	command[2] = '0';
+
+	if (motor == 0){
+		command[2] = '0';
+	}
+	if (motor == 1){
+		command[2] = '1';
+	}
+	if (motor == 2){
+		command[2] = '2';
+	}
 	command[3] = '.';
 
 	for (int i = 4; i < (4 + size); i++){
@@ -37,55 +58,37 @@ void positionX(){
 
 	int commandSize = 4 + size;
 
-	commandInterpreter(command, commandSize);
+	char passedCommand[commandSize];
 
-}
-
-void positionY(){
-
-	int size;
-	if (newCoordinateY < 10){
-		size = 1;
-	}
-	if (newCoordinateY > 10){
-		size = 2;
-	}
-	if (newCoordinateY == 100){
-		size = 3;
-	}
-	char str[size];
-	sprintf(str, "%d", newCoordinateY);
-	//:Rn:
-	char command[4 + size];
-	command[0] = ':';
-	command[1] = 'R';
-	command[2] = '1';
-	command[3] = '.';
-
-	for (int i = 4; i < (4 + size); i++){
-			command[i] = str[i - 4];
+	for (int i = 0; i < commandSize; i++){
+			passedCommand[i] = command[i];
 	}
 
-	int commandSize = 4 + size;
+	commandInterpreter(passedCommand, commandSize);
 
-	commandInterpreter(command, commandSize);
 }
 
 void positionsMotor(){
-	positionX();
-	positionY();
+	position('X');
+	position('Y');
+	position('Z');
 }
 
 
 void interpreterI2C(){
 	switch (buffer[0]){
 		case 'X':
-		newCoordinateX = atoi(&buffer[1]);
+		newCoordinate[0] = atoi(&buffer[1]);
+		position('X');
 		break;
 		case 'Y':
-		newCoordinateY = atoi(&buffer[1]);
+		newCoordinate[1] = atoi(&buffer[1]);
+		position('Y');
 		break;
-
+		case 'Z':
+		newCoordinate[2] = atoi(&buffer[1]);
+		position('Z');
+		break;
 		case 'C':
 		if (buffer[1]=='t'){
 			if (buffer[2] == 'o'){
@@ -116,6 +119,9 @@ void I2C_received(uint8_t received_data){
 		buffer[counterI2C++]=datum;
 		break;
 		case 'Y':
+		counterI2C = 0;
+		buffer[counterI2C++]=datum;
+		case 'Z':
 		counterI2C = 0;
 		buffer[counterI2C++]=datum;
 		break;

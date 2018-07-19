@@ -7,7 +7,7 @@
 #define BACKWARD 0
 #define START 1
 #define END 0
-#define NUMBER_STEPPERS 2
+#define NUMBER_STEPPERS 3
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -20,11 +20,9 @@
 
 
 #define reset()             \
-do{                         \
+    cli();                   \
     wdt_enable(WDTO_15MS);  \
-    for(;;){                \
-    }                       \
-} while(0)
+    while (1);
 
 
 float baseTime;
@@ -50,7 +48,6 @@ typedef struct {
 } Stepper;
 
 Stepper SteppersArray[NUMBER_STEPPERS];
-// int NUMBER_STEPPERS;
 
 Stepper createStepper(char enPort, int enPin, char dPort,
    int dPin, char stPort, int stPin, float degreesPerStep, int rpm);
@@ -68,7 +65,6 @@ void absolutePosition(Stepper *PaP, int position);
 void relativePosition(Stepper *PaP, int position);
 int getRelative(Stepper *PaP);
 int checkHoming(Stepper PaPArray[], int number_steppers);
-//void reset();
-// void setNumberSteppers(int number_steppers);
+
 
 #endif

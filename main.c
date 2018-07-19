@@ -22,8 +22,9 @@ enum State state;
 void configureGPIO(){
   setPin('B', 5, 1);
   setPin('B', 4, 1);
-  setPin('B', 2, 0);
-  setPin('B', 1, 0);
+  setPin('B', 3, 1);
+  setPin('B', 2, 1);
+  setPin('B', 1, 1);
   setPin('B', 0, 1);
   setPin('D', 7, 1);
   setPin('D', 6, 1);
@@ -36,10 +37,10 @@ void INTOHandler(){
   _delay_ms(20);
   if (readPin('D', 2)){
       state = ACT;
+      printf("ACT\n");
   }
   else {
-    //disableTimerInterrupts();
-    //state = INI;
+    reset();
   }
 }
 
@@ -50,19 +51,18 @@ int main(){
   setINT(0, INTOHandler, 1);
   configureGPIO();
 
-  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 10);
-  //SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 10);
-  //SteppersArray[2] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 10);
+  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 2);
+  SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 2);
+  SteppersArray[2] = createStepper('B', 1, 'B', 2, 'B', 3, 1.8, 2);
   float baseTime = 1.0;
   //timer1FastPWM(500, 450, 10);
   setPCINT(8, PCINT2Handler);
   setPCINT(9, PCINT2Handler);
-  // setPCINT(10, PCINT2Handler);
-  // setPCINT(11, PCINT2Handler);
+  setPCINT(10, PCINT2Handler);
+  setPCINT(11, PCINT2Handler);
   sei();
 
   printf("INI\n");
-
   while (1){
     switch (state){
       case INI:
@@ -89,10 +89,10 @@ int main(){
             break;
           }
         }
-
+        I2C_start();
         break;
       case POS:
-        _delay_ms(10000);
+        _delay_ms(1000);
         break;
       default:
         break;

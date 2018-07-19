@@ -15,8 +15,7 @@
 
 void interpreterI2C();
 void positionsMotor();
-void positionX();
-void positionY();
+void positionX(char selector);
 void I2C_received(uint8_t received_data);
 void I2C_requested();
 void setupI2C();

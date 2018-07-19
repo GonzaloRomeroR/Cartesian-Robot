@@ -17,7 +17,7 @@ int pinC[] = {
 
 int DDpinD[] = {
   DDD0, DDD1, DDD2, DDD3 ,DDD4,
-  DDD5, DDD5, DDD6, DDD7
+  DDD5, DDD6, DDD7
 };
 
 int DDpinB[] = {

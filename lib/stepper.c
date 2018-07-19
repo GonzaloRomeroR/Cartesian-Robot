@@ -20,17 +20,6 @@ void disableMotors(Stepper PaPArray[], int number_steppers){
 }
 
 
-// void reset(void)
-// {
-//     WDTCR=0x18;
-//     WDTCR=0x08;
-//     #asm("wdr")
-//     while(1);
-// }
-// void setNumberSteppers(int number_steppers){
-//   NUMBER_STEPPERS = number_steppers;
-// }
-
 void stopMotors(Stepper PaPArray[], int number_steppers){
   for (int i = 0; i < number_steppers; i++){
     PaPArray[i].steps = 0;
@@ -146,12 +135,25 @@ void raceEnd(int motorNumber, int class){
 
 void PCINT2Handler(){
   _delay_ms(20);
-  if (readPin('C', 0)){
+  if (readPin('C', 0) && readPin('C', 1)){
+    raceEnd(1, START);
+  }
+  else if (readPin('C', 0)){
     raceEnd(0, START);
   }
-  if (readPin('C', 1)){
+  else if (readPin('C', 1)){
     raceEnd(0, END);
   }
+  if (readPin('C', 2) && readPin('C', 3)){
+    raceEnd(2, END);
+  }
+  else if (readPin('C', 2)){
+    raceEnd(1, END);
+  }
+  else if (readPin('C', 3)){
+    raceEnd(2, START);
+  }
+
 }
 
 

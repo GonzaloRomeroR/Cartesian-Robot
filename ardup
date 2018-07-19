@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 files=(uart uartInterpreter interrupts GPIO timers stepper i2c i2c_interpreter)
+#files=(uart uartInterpreter interrupts GPIO timers stepper)
 
 
 if [ ! -d build ]; then
