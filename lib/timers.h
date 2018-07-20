@@ -17,5 +17,6 @@ void setPrescaler(float T);
 void setMode(int mode);
 void timer1FastPWM(float T, float dutyCicleA, float dutyCicleB);
 void disableTimerInterrupts();
+void timer0Normal(void (*handler)());
 
 #endif

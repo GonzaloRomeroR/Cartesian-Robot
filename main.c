@@ -44,6 +44,10 @@ void INTOHandler(){
   }
 }
 
+void timer0Handler(){
+  checkPositioning();
+}
+
 int main(){
   state = INI;
   stdout = stdin = &uart_io;
@@ -51,9 +55,9 @@ int main(){
   setINT(0, INTOHandler, 1);
   configureGPIO();
 
-  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 2);
-  SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 2);
-  SteppersArray[2] = createStepper('B', 1, 'B', 2, 'B', 3, 1.8, 2);
+  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 10);
+  SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 10);
+  SteppersArray[2] = createStepper('B', 1, 'B', 2, 'B', 3, 1.8, 10);
   float baseTime = 1.0;
   //timer1FastPWM(500, 450, 10);
   setPCINT(8, PCINT2Handler);
@@ -92,7 +96,8 @@ int main(){
         I2C_start();
         break;
       case POS:
-        _delay_ms(1000);
+        timer0Normal(timer0Handler);
+        _delay_ms(10000);
         break;
       default:
         break;

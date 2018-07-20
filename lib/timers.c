@@ -4,6 +4,16 @@
 int prescaler = 0;
 
 void (*handler_Timer1)();
+void (*handler_Timer0)();
+
+
+void timer0Normal(void (*handler)()){
+  TCCR0A &=~ (3 << WGM10);
+  TCCR0B &=~ (3 << WGM12);
+  TIMSK0 |= (1 << TOIE1);
+  TCCR0B |= (3 << CS10);
+  handler_Timer0 = handler;
+}
 
 void timer1CTC(float T, void (*handler)()){
   T = T / 2;
@@ -181,6 +191,9 @@ void setMode(int mode){
       TCCR1B |= (3 << WGM12);
       break;
   }
+}
+ISR(TIMER0_OVF_vect){
+  handler_Timer0();
 }
 
 ISR(TIMER1_COMPA_vect){

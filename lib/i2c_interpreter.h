@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <util/delay.h>
+#include <limits.h>
 #include "GPIO.h"
 #include "uart.h"
 #include "i2c.h"
@@ -20,6 +21,6 @@ void I2C_received(uint8_t received_data);
 void I2C_requested();
 void setupI2C();
 void I2C_start();
-
+void checkPositioning();
 
 #endif
