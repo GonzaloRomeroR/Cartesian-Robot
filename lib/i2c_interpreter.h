@@ -8,6 +8,7 @@
 #include <math.h>
 #include <util/delay.h>
 #include <limits.h>
+#include <string.h>
 #include "GPIO.h"
 #include "uart.h"
 #include "i2c.h"

@@ -1,0 +1,1 @@
+picocom -b57600 /dev/ttyACM0 --echo --omap lfcrlf --imap lfcrlf

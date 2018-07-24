@@ -24,7 +24,8 @@ def MakeHandler(cl):
             f.close()
             #Senal de respuesta
             print ("Se ha realizado la trasferencia exitosamente")
-            self.wfile.write("200")
+            #self.wfile.write("200")
+            self.send_response(200)
             ReconocimientoMicro.configuracionInicial(cl)
     return MiHTTPRequestHandler
 

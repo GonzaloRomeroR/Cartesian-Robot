@@ -204,10 +204,10 @@ void interpreterI2C(){
 			case 'X':
 				newCoordinate[0] = atoi(&buffer[1]);
 				break;
-				case 'Y':
+			case 'Y':
 				newCoordinate[1] = atoi(&buffer[1]);
 				break;
-				case 'Z':
+			case 'Z':
 				newCoordinate[2] = atoi(&buffer[1]);
 			break;
 			case 'C':
@@ -260,6 +260,7 @@ void I2C_received(uint8_t received_data){
 		case '-' :
 		buffer[counterI2C]=0;
 		interpreterI2C();
+		memset(buffer, 0, 10);
 		break;
 		default:
 		buffer[counterI2C++] = datum;
