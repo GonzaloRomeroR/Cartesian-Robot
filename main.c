@@ -44,6 +44,29 @@ void INTOHandler(){
   }
 }
 
+void PCINT2Handler(){
+  _delay_ms(20);
+  if (readPin('C', 0) && readPin('C', 1)){
+    raceEnd(1, START);
+  }
+  else if (readPin('C', 0)){
+    raceEnd(0, START);
+  }
+  else if (readPin('C', 1)){
+    raceEnd(0, END);
+  }
+  if (readPin('C', 2) && readPin('C', 3)){
+    raceEnd(2, END);
+  }
+  else if (readPin('C', 2)){
+    raceEnd(1, END);
+  }
+  else if (readPin('C', 3)){
+    raceEnd(2, START);
+  }
+
+}
+
 void timer0Handler(){
   checkPositioning();
 }
@@ -55,7 +78,7 @@ int main(){
   setINT(0, INTOHandler, 1);
   configureGPIO();
 
-  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 1.8, 10);
+  SteppersArray[0] = createStepper('D', 3, 'D', 4, 'D', 5, 7.5, 10);
   SteppersArray[1] = createStepper('D', 6, 'D', 7, 'B', 0, 1.8, 10);
   SteppersArray[2] = createStepper('B', 1, 'B', 2, 'B', 3, 1.8, 10);
   float baseTime = 1.0;

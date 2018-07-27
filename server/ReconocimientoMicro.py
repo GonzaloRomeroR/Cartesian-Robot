@@ -41,7 +41,7 @@ def crearString(parametro1,parametro2,tipo):
         return cadenaCentroideX, cadenaCentroideY
 
     elif tipo =='D':
-            diametro = 'D' + str(parametro1)[0:4]
+            diametro = 'D' + str(int(parametro1))
             print (diametro)
             if len(diametro ) < 8:
                 for i in range( 8 - len(diametro) ):
@@ -64,6 +64,13 @@ def crearCadenaClasificacion(categoria):
 
 def procesamientoImagen(imagenInicial,factorEscalaImagen,factorEscalaRealidad,cl):
     #Filtrado de la imagen con filtro gausiano
+
+    ########### Debug ################
+    # cv2.imshow('image',imagenInicial)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    ##################################
+
     print ("Se realiza el filtrado de la imagen")
     #imagenInicial = cv2.GaussianBlur(imagenInicial,(5,5),0)
     #Se lleva la imagen a blanco y negro
@@ -72,6 +79,13 @@ def procesamientoImagen(imagenInicial,factorEscalaImagen,factorEscalaRealidad,cl
     #Se binariza la imagen en en (0,0,0) y (255,255,255)
     print ("Se binariza la imagen")
     ret,imagenBinaria = cv2.threshold(imagenGris,70,255,cv2.THRESH_BINARY_INV)
+
+    ########### Debug ################
+    # cv2.imshow('image',imagenBinaria)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    ##################################
+
     #Se hallan los contornos externos de la imagen
     print ("Se hallan lo contornos")
     im, contornos, jerarquia = cv2.findContours(imagenBinaria,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
@@ -80,6 +94,13 @@ def procesamientoImagen(imagenInicial,factorEscalaImagen,factorEscalaRealidad,cl
     #Se dibujan los contornos
     print ("Se dibujan los contornos")
     imagenFinal = cv2.drawContours(imagenFinal, contornos,-1, (10,10,255), 2)
+
+
+    ########### Debug ################
+    # cv2.imshow('image',imagenFinal)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    ##################################
     #Se hallan los centroides
 
     call("python3 clasificarImagen.py", shell=True)
@@ -101,18 +122,20 @@ def procesamientoImagen(imagenInicial,factorEscalaImagen,factorEscalaRealidad,cl
             continue
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
-        cv2.circle(imagenFinal, (cx, cy), 2, (0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-        coordenadaRealX = cx * factorEscalaImagen * factorEscalaRealidad
-        coordenadaRealY = cy * factorEscalaImagen * factorEscalaRealidad
+        cv2.circle(imagenFinal, (cx, cy), 2, (0, 255, 0), thickness = 2, lineType = cv2.LINE_AA)
+        #coordenadaRealX = cx * factorEscalaImagen * factorEscalaRealidad
+        #coordenadaRealY = cy * factorEscalaImagen * factorEscalaRealidad
+        coordenadaRealX = cx
+        coordenadaRealY = cy
         print ("Centroide ", i+1," X: ", coordenadaRealX ," Y: ",coordenadaRealY)
         #Diametro equivalente
         area = cv2.contourArea(contornos[i])
-        diametroEquivalente = np.sqrt(4*area/np.pi)
+        diametroEquivalente = np.sqrt(4 * area / np.pi)
         diametroReal = diametroEquivalente * factorEscalaImagen * factorEscalaRealidad
-        print ("Diametro equivalente ",i+1," = " ,diametroReal)
+        print ("Diametro equivalente ",i + 1," = " ,diametroReal)
         #Los valores se convierten a string para poder pasarse
-        cadenaCentroideX, cadenaCentroideY=crearString (coordenadaRealX,coordenadaRealY,'C')
-        cadenaDiametro = crearString(diametroReal,0,'D')
+        cadenaCentroideX, cadenaCentroideY = crearString (coordenadaRealX, coordenadaRealY, 'C')
+        cadenaDiametro = crearString(diametroReal, 0, 'D')
         #Se imprimen las cadenas obtenidas
         print (" Cadenas obtenidas ")
         print (cadenaCentroideX)
@@ -139,12 +162,14 @@ def configuracionInicial(cl):
     numeroCamara = 0
 
     if Selector == "Imagen":
-        im = cv2.imread('Imagen/imagen1.jpg')     # <----------------CAMBIAR
+        im = cv2.imread('Imagen/imagen.jpg')     # <----------------CAMBIAR
         if im is None:
             print("No se ha encontrado la imagen")
         else:
+            #im = cv2.resize(im,(320, 240), interpolation = cv2.INTER_CUBIC)
+            im = cv2.resize(im,(100, 100), interpolation = cv2.INTER_CUBIC)
             # os.remove('imagen.jpg')     #< -----------------CAMBIAR
-            im = cv2.resize(im, None, fx= factorEscalaImagen, fy= factorEscalaImagen, interpolation= cv2.INTER_LINEAR)
+            #im = cv2.resize(im, None, fx= factorEscalaImagen, fy= factorEscalaImagen, interpolation= cv2.INTER_LINEAR)
             procesamientoImagen(im,factorEscalaImagen,factorEscalaRealidad,cl)
 
 
@@ -162,10 +187,10 @@ def configuracionInicial(cl):
                     capturas = capturas + 1
                     #Se toma la imagenes cada cierta cantidad de capturas
                     if capturas == factorCapturas:
-                        im = cv2.resize(im, None, fx= factorEscalaImagen, fy= factorEscalaImagen, interpolation= cv2.INTER_LINEAR)
+                        im = cv2.resize(im, None, fx = factorEscalaImagen, fy = factorEscalaImagen, interpolation= cv2.INTER_LINEAR)
                         cv2.imshow('Imagen tomada',im)
                         k = cv2.waitKey(1000) & 0xFF
-                        procesamientoImagen(im,factorEscalaImagen,factorEscalaRealidad,cl)
+                        procesamientoImagen(im, factorEscalaImagen, factorEscalaRealidad, cl)
                         capturas = 0
                 else:
                     print (" No se ha podido capturar el video")

@@ -5,7 +5,7 @@ import socket
 import time
 
 
-IP = '192.168.1.42'
+IP = '192.168.1.35'
 puerto = 30000
 ssid = 'Telefonica'
 contrasena = '20582589'
@@ -33,7 +33,7 @@ while True:
 		continue
 print("Connection with server reached")
 
-i2c = I2C(scl=Pin(pinSCL), sda=Pin(pinSDA), freq=100000)
+i2c = I2C(scl = Pin(pinSCL), sda = Pin(pinSDA), freq =  100000)
 
 while True:
 	try:

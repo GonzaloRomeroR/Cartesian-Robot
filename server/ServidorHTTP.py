@@ -17,7 +17,7 @@ def MakeHandler(cl):
             #Recibe la informacion en cuestion
             data_received = self.rfile.read(content_length)
             #Decodifica el string en base 64
-            imgdata = base64.b64decode(data_received[23:])
+            imgdata = base64.b64decode(data_received)
             #Escribe el archivo
             f = open('Imagen/imagen.jpg', 'wb')
             f.write(imgdata)

@@ -133,30 +133,6 @@ void raceEnd(int motorNumber, int class){
   }
 }
 
-void PCINT2Handler(){
-  _delay_ms(20);
-  if (readPin('C', 0) && readPin('C', 1)){
-    raceEnd(1, START);
-  }
-  else if (readPin('C', 0)){
-    raceEnd(0, START);
-  }
-  else if (readPin('C', 1)){
-    raceEnd(0, END);
-  }
-  if (readPin('C', 2) && readPin('C', 3)){
-    raceEnd(2, END);
-  }
-  else if (readPin('C', 2)){
-    raceEnd(1, END);
-  }
-  else if (readPin('C', 3)){
-    raceEnd(2, START);
-  }
-
-}
-
-
 void timer1Handler(){
   for (int i = 0; i < NUMBER_STEPPERS; i++){
     if (SteppersArray[i].enable == ENABLE){

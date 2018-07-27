@@ -20,6 +20,7 @@ def help():
     print("Znnn -> Z[Relative position Z]")
     print("S -> Set synchronization speeds")
     print("G -> Start trajectory")
+    print("P -> Start positioning")
     print("h -> help")
 
 def main():

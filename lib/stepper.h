@@ -59,7 +59,6 @@ void setSpeed(Stepper *PaP, int rpm);
 void timer1Handler();
 void setBaseTime(float base);
 void homing(Stepper PaPArray[], int number_steppers);
-void PCINT2Handler();
 void raceEnd(int motorNumber, int class);
 void absolutePosition(Stepper *PaP, int position);
 void relativePosition(Stepper *PaP, int position);

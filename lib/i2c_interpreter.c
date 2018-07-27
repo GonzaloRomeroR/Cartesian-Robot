@@ -154,10 +154,10 @@ void checkPositioning(){
 			counterPos = 1;
 			newCoordinate[0] = X_REFERENCE;
 			newCoordinate[1] = Y_REFERENCE;
+			newCoordinate[2] = Z_REFERENCE_UP;
 			calculateSpeed();
 			position('X');
 			position('Y');
-			newCoordinate[2] = Z_REFERENCE_UP;
 			position('Z');
 			printf("Position TO_UP_REFERENCE\n");
 		}
@@ -211,14 +211,23 @@ void interpreterI2C(){
 				newCoordinate[2] = atoi(&buffer[1]);
 			break;
 			case 'C':
-				if (buffer[1]=='t'){
+				if (buffer[1] == 't'){
+					if(buffer[2] == 'u' ){
+						X_REFERENCE = 90;
+						Y_REFERENCE = 90;
+						Z_REFERENCE_UP = 90;
+						Z_REFERENCE_DOWN = 5;
+
+					}
 					if (buffer[2] == 'o'){
-						category = 1;
+						X_REFERENCE = 5;
+						Y_REFERENCE = 5;
+						Z_REFERENCE_UP = 90;
+						Z_REFERENCE_DOWN = 5;
 					}
-					if (buffer[2] == 'u'){
-						category = 0;
-					}
+
 				}
+
 			break;
 			case 'D':
 				Diameter = atoi(&buffer[1]);
