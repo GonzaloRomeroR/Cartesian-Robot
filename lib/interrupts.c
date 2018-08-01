@@ -19,18 +19,24 @@ void (*handler_PCINT2)();
 
 void setPCINT(int pin, void (*handler_PC)()){
   if (pin < 8){
+    // PCIE0 enables pin group from 0 to 7
     PCICR |= (1 << PCIE0);
     handler_PCINT0 = handler_PC;
+    // Enables interruption
     PCMSK0 |= (1 << PCINTs[pin]);
   }
   if (pin < 15 && pin >= 8){
+    // PCIE0 enables pin group from 8 to 14
     PCICR |= (1 << PCIE1);
     handler_PCINT1 = handler_PC;
+    // Enables interruption
     PCMSK1 |= (1 << PCINTs[pin]);
   }
   if (pin > 15){
+    // PCIE0 enables pin group from 16 to 23
     PCICR |= (1 << PCIE2);
     handler_PCINT2 = handler_PC;
+    // Enables interruption
     PCMSK2 |= (1 << PCINTs[pin]);
   }
 }
@@ -42,10 +48,12 @@ void setINT(int interruption, void (*handler)(), int event){
   if (interruption == 0){
     setEvent(0, event);
     EIMSK |= (1 << INT0);
+    // Enables external interruption
     handler_0 = handler;
   }
   if (interruption == 1){
     setEvent(1, event);
+    // Enables external interruption
     EIMSK |= (1 << INT1);
     handler_1 = handler;
   }

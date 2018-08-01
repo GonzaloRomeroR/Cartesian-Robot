@@ -59,7 +59,7 @@ void commandInterpreter(char command[], int size){
       printf("Not enough arguments, use help command (:h). \n");
     }
     else{
-      printf("Moving motor %d to relative position %d\n", motor, number);
+      printf("Motor %d to rel %d\n", motor, number);
       relativePosition(&SteppersArray[motor], number);
     }
     break;
